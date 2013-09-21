@@ -915,6 +915,7 @@ PHP_MINIT_FUNCTION( intl )
 #ifdef U_ICU_DATA_VERSION
 	REGISTER_STRING_CONSTANT("INTL_ICU_DATA_VERSION", U_ICU_DATA_VERSION, CONST_PERSISTENT | CONST_CS);
 #endif	
+	REGISTER_STRING_CONSTANT("INTL_UNICODE_VERSION", U_UNICODE_VERSION, CONST_PERSISTENT | CONST_CS);
 
 	/* Register 'Collator' PHP class */
 	collator_register_Collator_class( TSRMLS_C );
@@ -1056,6 +1057,7 @@ PHP_MINFO_FUNCTION( intl )
 #ifdef U_ICU_DATA_VERSION
 	php_info_print_table_row( 2, "ICU Data version", U_ICU_DATA_VERSION );
 #endif
+	php_info_print_table_row(2, "Unicode version", U_UNICODE_VERSION);
 	php_info_print_table_end();
 
     /* For the default locale php.ini setting */
