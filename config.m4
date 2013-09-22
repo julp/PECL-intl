@@ -31,6 +31,7 @@ if test "$PHP_INTL" != "no"; then
     collator/collator_create.c \
     collator/collator_is_numeric.c \
     collator/collator_error.c \
+    collator/collator_string.c \
     common/common_error.c \
     common/common_enum.cpp \
     common/common_date.cpp \

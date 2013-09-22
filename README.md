@@ -45,7 +45,7 @@ Note: for locale independant case insensitivity (turkic languages excluded), you
 ## As static extension
 
 1. get PHP sources, uncompress them and go into their directory
-2. move or delete official sources of intl (rm -fr ext/intl/*)
+2. move or delete official sources of intl (`rm -fr ext/intl/*`)
 3. grab these sources and extract them into the directory ext/intl
 4. run buildconf from top directory of PHP (`./buildconf --force`)
 5. compile PHP as usual (`./configure ... --enable-intl && make && make install`)
