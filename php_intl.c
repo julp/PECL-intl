@@ -88,6 +88,9 @@
 
 #include "string/string.h"
 
+#include "regexp/regexp_class.h"
+#include "regexp/regexp_methods.h"
+
 #if U_ICU_VERSION_MAJOR_NUM * 1000 + U_ICU_VERSION_MINOR_NUM >= 4002
 # include "spoofchecker/spoofchecker_class.h"
 # include "spoofchecker/spoofchecker.h"
@@ -630,6 +633,41 @@ ZEND_BEGIN_ARG_INFO_EX( ainfo_gregcal_set_gregorian_change, 0, 0, 2 )
 	ZEND_ARG_INFO( 0, date )
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_regexp_void, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_regexp_create, 0, 0, 1)
+	ZEND_ARG_INFO(0, pattern)
+	ZEND_ARG_INFO(0, flags)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_regexp_match, 0, 0, 2)
+	ZEND_ARG_INFO(0, regexp)
+	ZEND_ARG_INFO(0, subject)
+	ZEND_ARG_INFO(1, match)
+	ZEND_ARG_INFO(0, flags)
+	ZEND_ARG_INFO(0, start_offset)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_regexp_self, 0, 0, 1)
+	ZEND_ARG_INFO(0, regexp)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_regexp_replace, 0, 0, 3)
+	ZEND_ARG_INFO(0, regexp)
+	ZEND_ARG_INFO(0, subject)
+	ZEND_ARG_INFO(0, replacement)
+	ZEND_ARG_INFO(0, limit)
+	ZEND_ARG_INFO(1, count)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_regexp_split, 0, 0, 2)
+	ZEND_ARG_INFO(0, regexp)
+	ZEND_ARG_INFO(0, subject)
+	ZEND_ARG_INFO(0, limit)
+	ZEND_ARG_INFO(0, flags)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_string_plus_1optional, 0, 0, 1)
 	ZEND_ARG_INFO(0, string)
 	ZEND_ARG_INFO(0, optional)
@@ -864,6 +902,18 @@ zend_function_entry intl_functions[] = {
 	PHP_FE( intlgregcal_get_gregorian_change, ainfo_gregcal_only_gregcal )
 	PHP_FE( intlgregcal_is_leap_year, ainfo_gregcal_is_leap_year )
 
+	/* regexp functions */
+	PHP_FE( regexp_create, arginfo_regexp_create )
+	PHP_FE( regexp_match, arginfo_regexp_match )
+	PHP_FE( regexp_match_all, arginfo_regexp_match )
+	PHP_FE( regexp_replace, arginfo_regexp_replace )
+	PHP_FE( regexp_replace_callback, arginfo_regexp_replace )
+	PHP_FE( regexp_split, arginfo_regexp_split )
+	PHP_FE( regexp_get_pattern, arginfo_regexp_self )
+	PHP_FE( regexp_get_flags, arginfo_regexp_self )
+	PHP_FE( regexp_get_error_code, arginfo_regexp_self )
+	PHP_FE( regexp_get_error_message, arginfo_regexp_self )
+
 	/* general string functions */
 	PHP_FE( utf8_toupper, arginfo_string_plus_1optional )
 	PHP_FE( utf8_totitle, arginfo_string_plus_1optional )
@@ -1018,6 +1068,12 @@ PHP_MINIT_FUNCTION( intl )
 
 	/* 'Converter' class for codepage conversions */
 	php_converter_minit(INIT_FUNC_ARGS_PASSTHRU);
+
+	/* Register Regexp PHP class */
+	regexp_register_Regexp_class( TSRMLS_C );
+
+	/* Register Regexp constants */
+	regexp_register_constants( INIT_FUNC_ARGS_PASSTHRU );
 
 	return SUCCESS;
 }

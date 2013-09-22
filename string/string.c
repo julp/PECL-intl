@@ -3,9 +3,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <string.h>
-// #include <unicode/ubrk.h>
-// #include <unicode/uset.h>
-// #include <unicode/unorm.h>
 
 #include "php.h"
 #include "php_intl.h"

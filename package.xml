@@ -641,6 +641,10 @@
    <file role="src" name="intl_data.h"/>
    <file role="src" name="intl_error.c"/>
    <file role="src" name="intl_error.h"/>
+   <file role="src" name="intl_utf8.h"/>
+   <file role="src" name="intl_utf8.c"/>
+   <file role="src" name="intl_utf16.h"/>
+   <file role="src" name="intl_utf16.c"/>
    <file role="src" name="php_compatshims.h"/>
    <file role="src" name="php_intl.c"/>
    <file role="src" name="php_intl.h"/>

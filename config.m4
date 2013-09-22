@@ -20,7 +20,7 @@ if test "$PHP_INTL" != "no"; then
   PHP_NEW_EXTENSION(intl, php_intl.c \
     intl_error.c \
     intl_convert.c \
-	intl_convertcpp.cpp \
+    intl_convertcpp.cpp \
     collator/collator.c \
     collator/collator_class.c \
     collator/collator_sort.c \
@@ -32,8 +32,8 @@ if test "$PHP_INTL" != "no"; then
     collator/collator_is_numeric.c \
     collator/collator_error.c \
     common/common_error.c \
-	common/common_enum.cpp \
-	common/common_date.cpp \
+    common/common_enum.cpp \
+    common/common_date.cpp \
     converter/converter.c \
     formatter/formatter.c \
     formatter/formatter_main.c \
@@ -86,7 +86,12 @@ if test "$PHP_INTL" != "no"; then
     breakiterator/codepointiterator_methods.cpp \
     idn/idn.c \
     intl_case.c \
+    intl_utf8.c \
+    intl_utf16.c \
     string/string.c \
+    regexp/regexp.c \
+    regexp/regexp_class.c \
+    regexp/regexp_methods.c \
     $icu_spoof_src, $ext_shared,,$ICU_INCS -Wno-write-strings)
   PHP_ADD_BUILD_DIR($ext_builddir/collator)
   PHP_ADD_BUILD_DIR($ext_builddir/converter)
@@ -105,5 +110,6 @@ if test "$PHP_INTL" != "no"; then
   PHP_ADD_BUILD_DIR($ext_builddir/spoofchecker)
   PHP_ADD_BUILD_DIR($ext_builddir/breakiterator)
   PHP_ADD_BUILD_DIR($ext_builddir/string)
+  PHP_ADD_BUILD_DIR($ext_builddir/regexp)
   PHP_ADD_EXTENSION_DEP(intl, date, true)
 fi

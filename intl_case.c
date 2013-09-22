@@ -10,12 +10,6 @@
 #include <unicode/ucasemap.h>
 #include "intl_case.h"
 
-#define mem_new(type) \
-    emalloc((sizeof(type)))
-
-#define mem_new_n(type, n) \
-    emalloc((sizeof(type) * (n)))
-
 ZEND_EXTERN_MODULE_GLOBALS(intl)
 
 typedef int32_t (*u16_func_full_case_mapping_t)(UChar *, int32_t, const UChar *, int32_t, const char *, UErrorCode *);

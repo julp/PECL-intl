@@ -33,6 +33,15 @@
 #include <unicode/ubrk.h>
 #include "intl_error.h"
 
+#define mem_new(type)           emalloc((sizeof(type)))
+#define mem_new_n(type, n)      emalloc((sizeof(type) * (n)))
+#define mem_renew(ptr, type, n) erealloc((ptr), (sizeof(type) * (n)))
+
+typedef enum {
+	REPLACE_FORWARD,
+	REPLACE_REVERSE
+} ReplacementDirection;
+
 extern zend_module_entry intl_module_entry;
 #define phpext_intl_ptr &intl_module_entry
 
