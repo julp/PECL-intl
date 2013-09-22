@@ -54,6 +54,7 @@ ZEND_BEGIN_MODULE_GLOBALS(intl)
 	intl_error g_error;
 	long error_level;
 	zend_bool use_exceptions;
+	zend_bool turkic_casefolding;
 ZEND_END_MODULE_GLOBALS(intl)
 
 /* Macro to access request-wide global variables. */

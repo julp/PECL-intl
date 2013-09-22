@@ -193,6 +193,9 @@
     <file role="src" name="resourcebundle_iterator.c"/>
     <file role="src" name="resourcebundle_iterator.h"/>
    </dir>
+   <dir name="string">
+    <file role="src" name="string.c"/>
+   </dir>
    <dir name="spoofchecker">
     <file role="src" name="spoofchecker.c"/>
     <file role="src" name="spoofchecker.h"/>
@@ -509,6 +512,9 @@
     <file role="test" name="spoofchecker_002.phpt"/>
     <file role="test" name="spoofchecker_003.phpt"/>
     <file role="test" name="spoofchecker_004.phpt"/>
+    <file role="test" name="string_endswith.phpt"/>
+    <file role="test" name="string_fullcasemapping.phpt"/>
+    <file role="test" name="string_startswith.phpt"/>
     <file role="test" name="symfony_format_type_double_intl1.phpt"/>
     <file role="test" name="symfony_format_type_double_intl2.phpt"/>
     <file role="test" name="symfony_format_type_double_intl3.phpt"/>
@@ -624,6 +630,8 @@
    <file role="src" name="config.w32"/>
    <file role="doc" name="CREDITS"/>
    <file role="doc" name="ERROR.CONVENTIONS"/>
+   <file role="src" name="intl_case.h"/>
+   <file role="src" name="intl_case.c"/>
    <file role="src" name="intl_common.h"/>
    <file role="src" name="intl_convert.c"/>
    <file role="src" name="intl_convert.h"/>

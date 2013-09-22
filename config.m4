@@ -85,6 +85,8 @@ if test "$PHP_INTL" != "no"; then
     breakiterator/codepointiterator_internal.cpp \
     breakiterator/codepointiterator_methods.cpp \
     idn/idn.c \
+    intl_case.c \
+    string/string.c \
     $icu_spoof_src, $ext_shared,,$ICU_INCS -Wno-write-strings)
   PHP_ADD_BUILD_DIR($ext_builddir/collator)
   PHP_ADD_BUILD_DIR($ext_builddir/converter)
@@ -102,5 +104,6 @@ if test "$PHP_INTL" != "no"; then
   PHP_ADD_BUILD_DIR($ext_builddir/idn)
   PHP_ADD_BUILD_DIR($ext_builddir/spoofchecker)
   PHP_ADD_BUILD_DIR($ext_builddir/breakiterator)
+  PHP_ADD_BUILD_DIR($ext_builddir/string)
   PHP_ADD_EXTENSION_DEP(intl, date, true)
 fi

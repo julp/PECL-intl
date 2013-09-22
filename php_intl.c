@@ -86,6 +86,8 @@
 
 #include "idn/idn.h"
 
+#include "string/string.h"
+
 #if U_ICU_VERSION_MAJOR_NUM * 1000 + U_ICU_VERSION_MINOR_NUM >= 4002
 # include "spoofchecker/spoofchecker_class.h"
 # include "spoofchecker/spoofchecker.h"
@@ -628,6 +630,17 @@ ZEND_BEGIN_ARG_INFO_EX( ainfo_gregcal_set_gregorian_change, 0, 0, 2 )
 	ZEND_ARG_INFO( 0, date )
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_string_plus_1optional, 0, 0, 1)
+	ZEND_ARG_INFO(0, string)
+	ZEND_ARG_INFO(0, optional)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_string_endbegin, 0, 0, 2)
+	ZEND_ARG_INFO(0, string)
+	ZEND_ARG_INFO(0, prefix_or_suffix)
+	ZEND_ARG_INFO(0, case_insensitive)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* {{{ intl_functions
@@ -851,6 +864,13 @@ zend_function_entry intl_functions[] = {
 	PHP_FE( intlgregcal_get_gregorian_change, ainfo_gregcal_only_gregcal )
 	PHP_FE( intlgregcal_is_leap_year, ainfo_gregcal_is_leap_year )
 
+	/* general string functions */
+	PHP_FE( utf8_toupper, arginfo_string_plus_1optional )
+	PHP_FE( utf8_totitle, arginfo_string_plus_1optional )
+	PHP_FE( utf8_tolower, arginfo_string_plus_1optional )
+	PHP_FE( utf8_startswith, arginfo_string_endbegin )
+	PHP_FE( utf8_endswith, arginfo_string_endbegin )
+
 	/* common functions */
 	PHP_FE( intl_get_error_code, intl_0_args )
 	PHP_FE( intl_get_error_message, intl_0_args )
@@ -863,9 +883,10 @@ zend_function_entry intl_functions[] = {
 
 /* {{{ INI Settings */
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY(LOCALE_INI_NAME, NULL, PHP_INI_ALL, OnUpdateStringUnempty, default_locale, zend_intl_globals, intl_globals)
-    STD_PHP_INI_ENTRY("intl.error_level", "0", PHP_INI_ALL, OnUpdateLong, error_level, zend_intl_globals, intl_globals)
+	STD_PHP_INI_ENTRY(LOCALE_INI_NAME, NULL, PHP_INI_ALL, OnUpdateStringUnempty, default_locale, zend_intl_globals, intl_globals)
+	STD_PHP_INI_ENTRY("intl.error_level", "0", PHP_INI_ALL, OnUpdateLong, error_level, zend_intl_globals, intl_globals)
 	STD_PHP_INI_ENTRY("intl.use_exceptions", "0", PHP_INI_ALL, OnUpdateBool, use_exceptions, zend_intl_globals, intl_globals)
+	STD_PHP_INI_ENTRY("intl.turkic_casefolding", "0", PHP_INI_ALL, OnUpdateBool, turkic_casefolding, zend_intl_globals, intl_globals)
 PHP_INI_END()
 /* }}} */
 
