@@ -1,6 +1,6 @@
 # Introduction
 
-This repository is **unofficial** and experimental. Its goal is to extend current implementation of PHP/intl extension with some +/- essential, or at least useful, missing functions.
+This repository is **unofficial** and **experimental**. Its goal is to extend current implementation of PHP/intl extension with some +/- essential, or at least useful, missing functions.
 
 Their implementation may be "slow" because:
 * some conversions UTF-8 (PHP) <=> UTF-16 (ICU) were avoided (TODO: benchmark)
@@ -29,8 +29,8 @@ Their implementation may be "slow" because:
   * split `array Regexp::split(string $subject [, int $limit = -1 [, int $flags = 0 ]])`
 * String, functions added:
   * full case mapping: functions utf8_to\[upper|lower|title\] \(strtoupper, strtolower, ucwords replacements\) `string utf8_toupper(string $string [, string $locale = ini_get('intl.default_locale') ])`
-  * utf8_startswith (locale independant) `bool utf8_startswith(string $string, string $prefix [, bool $case_insensitive = FALSE ])`
-  * utf8_endswith (locale independant) `bool utf8_endswith(string $string, string $suffix [, bool $case_insensitive = FALSE ])`
+  * utf8_startswith (locale independant and turkic languages supported) `bool utf8_startswith(string $string, string $prefix [, bool $case_insensitive = FALSE ])`
+  * utf8_endswith (locale independant and turkic languages supported) `bool utf8_endswith(string $string, string $suffix [, bool $case_insensitive = FALSE ])`
 
 Note: for locale independant case insensitivity (turkic languages excluded), you can use UCA rules by creating a "root" Collator (`$coll = new Collator('root');`) (do not use an empty string as locale name) and a secondary-level strength (`$coll->setStrength(Collator::SECONDARY);`)
 
@@ -38,9 +38,11 @@ Note: for locale independant case insensitivity (turkic languages excluded), you
 
 ## As dynamic extension
 
-1. Make sure your current PHP installation does not already include intl as a static extension (if dynamic, copy intl.so or php_intl.dll somewhere else)
+1. Make sure your current PHP installation does not already include intl as a static extension (if dynamic, backup first intl.so or php_intl.dll somewhere else)
 2. grab these sources
 3. compile and install them as any other extension: `cd path/to/sources && phpize && ./configure && make && make install`
+4. load it by adding `extension=intl.so` (replace intl.so by php_intl.dll on Windows) to your php.ini
+5. restart your web server if relevant (depends on the SAPI - needed for fpm or apache2handler)
 
 ## As static extension
 
