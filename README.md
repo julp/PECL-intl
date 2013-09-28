@@ -3,7 +3,7 @@
 This repository is **unofficial** and **experimental**. Its goal is to extend current implementation of PHP/intl extension with some +/- essential, or at least useful, missing functions.
 
 Their implementation may be "slow" because:
-* some conversions UTF-8 (PHP) <=> UTF-16 (ICU) were avoided (TODO: benchmark)
+* some conversions UTF-8 (PHP) <=> UTF-16 (ICU) were avoided ([benchmark](https://gist.github.com/julp/6743297)) (concerns only regexp_replace_callback)
 * matches are "grapheme consistent"
 
 # Features
