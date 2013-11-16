@@ -1,7 +1,7 @@
 --TEST--
 Collator::replace
 --SKIPIF--
-<?php if (!extension_loaded('intl')) echo 'skip'; ?>
+<?php if (!extension_loaded('intl') || !extension_loaded('mbstring')) echo 'skip'; ?>
 --INI--
 intl.error_level=0
 intl.use_exceptions=0
@@ -67,6 +67,21 @@ var_dump(assert_multiple('İyi akşamlar', 'İ', '<dotted i>', '<dotted i>y<dott
 echo 'Turkish non dotted I', "\n";
 var_dump(assert_single('Hayır', 'I', '<non dotted i>', 'Hay<non dotted i>r'));
 var_dump(assert_multiple('Hayır', 'I', '<non dotted i>', 'Hay<non dotted i>r'));
+
+$grave = "\xCC\x80";
+$acute = "\xCC\x81";
+
+$e_acute_nfc = "\xC3\xA9";
+$e_acute_nfd = "e${acute}";
+
+$e_grave_nfc = "\xC3\xA8";
+$e_grave_nfd = "\x65${grave}";
+
+$input = "${e_acute_nfd}e${e_grave_nfd}";
+
+$coll->setStrength(Collator::SECONDARY);
+echo 'Grapheme consistency', "\n";
+var_dump(mb_convert_encoding($coll->replace($input, 'E', '<replaced>'), 'HTML-ENTITIES', 'UTF-8') === "e&#769;<replaced>e&#768;");
 ?>
 --EXPECTF--
 
@@ -95,4 +110,6 @@ bool(true)
 bool(true)
 Turkish non dotted I
 bool(true)
+bool(true)
+Grapheme consistency
 bool(true)
