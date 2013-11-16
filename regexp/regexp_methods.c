@@ -43,8 +43,8 @@
 
 #define UTF8_TO_UTF16(ro, to, to_len, from, from_len)                                      \
     do {                                                                                   \
-        to = NULL;                                                                         \
-        to_len = 0;                                                                        \
+        /*to = NULL;*/                                                                         \
+        /*to_len = 0;*/                                                                        \
         intl_convert_utf8_to_utf16(&to, &to_len, from, from_len, REGEXP_ERROR_CODE_P(ro)); \
         REGEXP_CHECK_STATUS(ro, "string conversion of " #from " to UTF-16 failed");        \
     } while (0);
@@ -613,7 +613,6 @@ PHP_FUNCTION(regexp_replace_callback)
     int subject_len = 0;
     UChar *usubject = NULL;
     int32_t usubject_len = 0;
-    int32_t usubject_cp_len = 0;
     zval **Zcallback;
     char *callback = NULL;
     zval *match_groups = NULL;
@@ -629,6 +628,10 @@ PHP_FUNCTION(regexp_replace_callback)
     UBreakIterator *ubrk = NULL;
     unsigned char u_break_iterator_buffer[U_BRK_SAFECLONE_BUFFERSIZE];
 #endif /* WITH_GRAPHEME */
+    UChar *ureplace = NULL;
+    int32_t ureplace_len = 0;
+    UChar *uresult = NULL;
+    int32_t uresult_len = 0;
     REGEXP_METHOD_INIT_VARS
 
     if (FAILURE == zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OsZ|lZ", &object, Regexp_ce_ptr, &subject, &subject_len, &Zcallback, &limit, &zcount)) {
@@ -643,7 +646,10 @@ PHP_FUNCTION(regexp_replace_callback)
         RETURN_FALSE;
     }
     UTF8_TO_UTF16(ro, usubject, usubject_len, subject, subject_len);
-    usubject_cp_len = u_countChar32(usubject, usubject_len);
+    uresult_len = usubject_len;
+    uresult = mem_new_n(*usubject, usubject_len + 1);
+    u_memcpy(uresult, usubject, usubject_len);
+    uresult[uresult_len] = 0;
     uregex_setText(ro->uregex, usubject, usubject_len, REGEXP_ERROR_CODE_P(ro));
     REGEXP_CHECK_STATUS(ro, "error setting text");
     group_count = uregex_groupCount(ro->uregex, REGEXP_ERROR_CODE_P(ro));
@@ -657,7 +663,6 @@ PHP_FUNCTION(regexp_replace_callback)
     MAKE_STD_ZVAL(match_groups);
     array_init(match_groups);
     zargs[0] = &match_groups;
-    result = estrndup(subject, result_len = subject_len);
     while (match_count < limit && uregex_findNext(ro->uregex, REGEXP_ERROR_CODE_P(ro))) {
         int i;
         char *group;
@@ -683,7 +688,8 @@ PHP_FUNCTION(regexp_replace_callback)
         }
         if (SUCCESS == call_user_function_ex(EG(function_table), NULL, *Zcallback, &retval_ptr, 1, zargs, 0, NULL TSRMLS_CC) && NULL != retval_ptr) {
             convert_to_string_ex(&retval_ptr);
-            utf8_replace_len_from_utf16(&result, &result_len, Z_STRVAL_P(retval_ptr), Z_STRLEN_P(retval_ptr), usubject, l0, u0 - l0, usubject_cp_len, REPLACE_FORWARD);
+            UTF8_TO_UTF16(ro, ureplace, ureplace_len, Z_STRVAL_P(retval_ptr), Z_STRLEN_P(retval_ptr));
+            utf16_replace_len(&uresult, &uresult_len, ureplace, ureplace_len, usubject, usubject_len, l0, u0 - l0, REPLACE_FORWARD);
             zval_ptr_dtor(&retval_ptr);
         } else {
             if (!EG(exception)) {
@@ -693,7 +699,7 @@ PHP_FUNCTION(regexp_replace_callback)
         }
         zend_hash_clean(Z_ARRVAL_P(match_groups)); // is it better/faster than overwrite/s?
     }
-    result[result_len] = '\0';
+    UTF16_TO_UTF8(ro, result, result_len, uresult, uresult_len);
     RETVAL_STRINGL(result, result_len, FALSE);
 
     if (ZEND_NUM_ARGS() == 4) {
@@ -712,6 +718,12 @@ end:
         ubrk_close(ubrk);
     }
 #endif /* WITH_GRAPHEME */
+    if (NULL != uresult) {
+        efree(uresult);
+    }
+    if (NULL != ureplace) {
+        efree(ureplace);
+    }
     if (NULL != usubject) {
         REGEXP_RESET(ro);
         efree(usubject);

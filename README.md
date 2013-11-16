@@ -2,15 +2,12 @@
 
 This repository is **unofficial** and **experimental**. Its goal is to extend current implementation of PHP/intl extension with some +/- essential, or at least useful, missing functions.
 
-Their implementation may be "slow" because:
-* some conversions UTF-8 (PHP) <=> UTF-16 (ICU) were avoided ([benchmark](https://gist.github.com/julp/6743297)) (concerns only regexp_replace_callback)
-* matches are "grapheme consistent"
-
 # Features
 
 * ini settings added (only used by utf8_[starts|ends]with for now):
   * intl.turkic_casefolding: i (U+69) = I (U+49) vs i (U+69) = İ (U+130) + ı (U+131) = I (U+49)
 * extra stuffs:
+  * all matches are "grapheme consistent"
   * expose Unicode version supported by intl/ICU (phpinfo + constant INTL_UNICODE_VERSION)
 * Collator, methods added (+ procedural equivalents):
   * replace (str_ireplace replacement) `string Collator::replace(string $string, string $search, string $replacement [, int &count ])`
@@ -38,7 +35,7 @@ Note: for locale independant case insensitivity (turkic languages excluded), you
 
 ## As dynamic extension
 
-1. Make sure your current PHP installation does not already include intl as a static extension (if dynamic, backup first intl.so or php_intl.dll somewhere else)
+1. make sure your current PHP installation does not already include intl as a static extension (if dynamic, backup/move first intl.so or php_intl.dll somewhere else)
 2. grab these sources
 3. compile and install them as any other extension: `cd path/to/sources && phpize && ./configure && make && make install`
 4. load it by adding `extension=intl.so` (replace intl.so by php_intl.dll on Windows) to your php.ini

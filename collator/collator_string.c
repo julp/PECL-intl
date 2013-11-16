@@ -238,10 +238,9 @@ PHP_FUNCTION(collator_lfind)
     collator_index(INTERNAL_FUNCTION_PARAM_PASSTHRU, TRUE, FALSE);
 }
 
-// #define UTF8_REPLACEMENT 1
-
 PHP_FUNCTION(collator_replace)
 {
+    int32_t l;
     char *result = NULL;
     int result_len = 0;
     char *search = NULL;
@@ -256,17 +255,11 @@ PHP_FUNCTION(collator_replace)
     int32_t usearch_len = 0;
     UChar *usubject = NULL;
     int32_t usubject_len = 0;
-#ifdef UTF8_REPLACEMENT
-    int32_t usubject_cp_len = 0;
-#endif /* UTF8_REPLACEMENT */
     UStringSearch *uss = NULL;
-    int32_t l;
-#ifndef UTF8_REPLACEMENT
     UChar *ureplace = NULL;
     int32_t ureplace_len = 0;
     UChar *uresult = NULL;
     int32_t uresult_len = 0;
-#endif /* !UTF8_REPLACEMENT */
 
     COLLATOR_METHOD_INIT_VARS
     if ( FAILURE == zend_parse_method_parameters( ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Osss|z", &object, Collator_ce_ptr, &subject, &subject_len, &search, &search_len, &replace, &replace_len, &zcount )) {
@@ -287,29 +280,16 @@ PHP_FUNCTION(collator_replace)
     UTF8_TO_UTF16(co, usubject, usubject_len, subject, subject_len);
     uss = usearch_openFromCollator(usearch, usearch_len, usubject, usubject_len, co->ucoll, NULL, COLLATOR_ERROR_CODE_P( co ));
     COLLATOR_CHECK_STATUS(co, "failed creating UStringSearch");
-#ifdef UTF8_REPLACEMENT
-    usubject_cp_len = u_countChar32(usubject, usubject_len);
-    result = estrndup(subject, result_len = subject_len);
-#else
     UTF8_TO_UTF16(co, ureplace, ureplace_len, replace, replace_len);
     uresult_len = usubject_len;
     uresult = mem_new_n(*usubject, usubject_len + 1);
     u_memcpy(uresult, usubject, usubject_len);
     uresult[uresult_len] = 0;
-#endif /* UTF8_REPLACEMENT */
     for (l = usearch_first(uss, COLLATOR_ERROR_CODE_P( co )); U_SUCCESS(COLLATOR_ERROR_CODE( co )) && USEARCH_DONE != l; l = usearch_next(uss, COLLATOR_ERROR_CODE_P( co )), count++) {
-#ifdef UTF8_REPLACEMENT
-        utf8_replace_len_from_utf16(&result, &result_len, replace, replace_len, usubject, l, usearch_getMatchedLength(uss), usubject_cp_len, REPLACE_FORWARD);
-#else
         utf16_replace_len(&uresult, &uresult_len, ureplace, ureplace_len, usubject, usubject_len, l, usearch_getMatchedLength(uss), REPLACE_FORWARD);
-#endif /* UTF8_REPLACEMENT */
     }
     COLLATOR_CHECK_STATUS(co, "failed while searching");
-#ifdef UTF8_REPLACEMENT
-    result[result_len] = '\0';
-#else
     UTF16_TO_UTF8(co, result, result_len, uresult, uresult_len);
-#endif /* UTF8_REPLACEMENT */
     RETVAL_STRINGL(result, result_len, FALSE);
 
     if (FALSE) {
@@ -322,14 +302,12 @@ end:
     if (NULL != uss) {
         usearch_close(uss);
     }
-#ifndef UTF8_REPLACEMENT
     if (NULL != uresult) {
         efree(uresult);
     }
     if (NULL != ureplace) {
         efree(ureplace);
     }
-#endif /* !UTF8_REPLACEMENT */
     if (NULL != usearch) {
         efree(usearch);
     }

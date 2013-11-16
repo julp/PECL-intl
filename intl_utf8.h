@@ -24,6 +24,5 @@
     } while (0);
 
 int utf8_cp_to_cu(const char *, int, int32_t, int32_t *, UErrorCode *status);
-void utf8_replace_len_from_utf16(char **, int *, char *, int, UChar *, int32_t, int32_t, int32_t, ReplacementDirection);
 
 #endif /* !INTL_UTF8_H */
